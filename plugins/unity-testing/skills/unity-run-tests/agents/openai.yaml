@@ -1,0 +1,6 @@
+interface:
+  display_name: "Unity Test Runner"
+  short_description: "Run and diagnose Unity project tests"
+  icon_small: "./assets/test-tube-diagonal.svg"
+  icon_large: "./assets/test-tube-diagonal.svg"
+  default_prompt: "Use $unity-run-tests to run the relevant tests for this Unity project."

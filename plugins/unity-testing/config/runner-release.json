@@ -1,0 +1,10 @@
+{
+  "repository": "alexey-potory/unity-test-runner",
+  "version": "0.1.0",
+  "assets": {
+    "windows-x86_64": "unity-test-runner-windows-x86_64.exe",
+    "linux-x86_64": "unity-test-runner-linux-x86_64",
+    "macos-x86_64": "unity-test-runner-macos-x86_64",
+    "macos-aarch64": "unity-test-runner-macos-aarch64"
+  }
+}

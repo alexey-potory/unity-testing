@@ -1,0 +1,94 @@
+# Default config for the Rust Unity test runner bundled with this plugin.
+# Precedence expected from the runner:
+# CLI args > project config > this file > built-in defaults.
+
+schema_version = 1
+
+[unity]
+# Personal Windows-oriented defaults. Environment variables such as %LOCALAPPDATA%
+# should be expanded by the runner.
+search_roots = [
+  "C:\\Program Files\\Unity\\Hub\\Editor",
+  "%LOCALAPPDATA%\\Unity\\Hub\\Editor",
+  "/Applications/Unity/Hub/Editor",
+  "$HOME/Unity/Hub/Editor"
+]
+
+# Prefer ProjectSettings/ProjectVersion.txt when present.
+prefer_project_version = true
+
+# If true, missing exact project editor version is an infrastructure error.
+# If false, runner may fall back according to fallback_policy.
+require_exact_project_version = true
+
+# Allowed values proposed for the Rust runner: "none", "latest_installed", "same_major_minor".
+fallback_policy = "none"
+
+# Optional explicit Unity executable override. Empty means resolve from search_roots.
+editor_executable = ""
+
+# Windows Unity Hub layout under each version directory.
+windows_executable_relative_path = "Editor\\Unity.exe"
+macos_executable_relative_path = "Unity.app/Contents/MacOS/Unity"
+linux_executable_relative_path = "Unity"
+
+[tests]
+default_platform = "EditMode"
+# Optional defaults. Empty strings mean not set.
+default_filter = ""
+default_category = ""
+
+[paths]
+# Relative paths are resolved against the Unity project root.
+artifact_dir = ".codex\\unity-test-results"
+results_file_name = "UnityTestResults-{platform}.xml"
+log_file_name = "UnityTest-{platform}.log"
+
+[runner]
+timeout_secs = 900
+keep_artifacts = false
+cleanup_success = true
+cleanup_failed_tests = false
+cleanup_infra_errors = false
+
+[output]
+format = "minimal"
+include_passed_tests = false
+include_log_tail_on_success = false
+include_log_tail_on_test_failure = false
+include_log_tail_on_infra_error = true
+log_tail_lines = 80
+
+[diagnostics]
+max_failures = 10
+max_compile_errors = 20
+max_exception_blocks = 5
+stack_trace_lines = 12
+context_lines = 4
+
+# Custom diagnostic patterns are optional. Runner should have built-in defaults
+# and merge/append these patterns when present.
+[[diagnostics.patterns]]
+kind = "compile_error"
+regex = "(?m)^(.+\\.cs)\\((\\d+),(\\d+)\\):\\s+error\\s+(CS\\d+):\\s+(.+)$"
+severity = "error"
+
+[[diagnostics.patterns]]
+kind = "license_error"
+regex = "(?i)(No valid Unity Editor license|LICENSE SYSTEM|License is invalid|Unity Licensing Client)"
+severity = "error"
+
+[[diagnostics.patterns]]
+kind = "package_error"
+regex = "(?i)(Package Manager|Failed to resolve packages|UPM|manifest\\.json|packages-lock\\.json)"
+severity = "error"
+
+[[diagnostics.patterns]]
+kind = "unity_startup_error"
+regex = "(?i)(Aborting batchmode due to failure|Fatal error|Failed to initialize|AssetDatabase.*failed)"
+severity = "error"
+
+[[diagnostics.patterns]]
+kind = "exception"
+regex = "(?m)((?:Unhandled\\s+)?(?:\\w+\\.)*\\w*Exception: .+(?:\\n\\s+at .+)*)"
+severity = "error"

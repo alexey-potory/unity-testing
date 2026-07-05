@@ -1,0 +1,27 @@
+{
+  "name": "unity-testing",
+  "version": "0.1.0",
+  "description": "Compile Unity projects, run Unity Test Framework tests, and write focused tests.",
+  "author": {
+    "name": "Alexey Potory",
+    "email": "alexey.potory@gmail.com",
+    "url": "https://github.com/alexey-potory"
+  },
+  "homepage": "https://github.com/alexey-potory/unity-testing",
+  "repository": "https://github.com/alexey-potory/unity-testing",
+  "license": "MIT",
+  "keywords": ["unity", "testing", "editmode", "playmode", "codex"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Unity Testing",
+    "shortDescription": "Compile, run, and write focused Unity tests.",
+    "longDescription": "Checks Unity compilation, runs targeted EditMode or PlayMode tests through unity-test-runner, and guides focused Unity test authoring.",
+    "developerName": "Alexey Potory",
+    "category": "Productivity",
+    "capabilities": ["Execute", "Write"],
+    "composerIcon": "./assets/unity-testing.svg",
+    "logo": "./assets/unity-testing.svg",
+    "websiteURL": "https://github.com/alexey-potory/unity-testing",
+    "defaultPrompt": "Run the relevant Unity tests and diagnose any failures."
+  }
+}

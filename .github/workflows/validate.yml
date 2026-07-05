@@ -1,0 +1,25 @@
+name: Validate marketplace
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - shell: pwsh
+        run: .\tests\launcher-contract.ps1
+      - shell: pwsh
+        run: '[ScriptBlock]::Create((Get-Content -Raw .\plugins\unity-testing\scripts\invoke-runner.ps1)) | Out-Null'
+
+  unix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sh -n ./plugins/unity-testing/scripts/invoke-runner.sh
