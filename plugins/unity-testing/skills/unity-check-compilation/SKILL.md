@@ -24,6 +24,8 @@ Do not run `doctor` first. Use it only when the runner reports that the Unity Ed
 
 Read stdout first. `ok` means compilation succeeded. On JSON output, treat `status` and `ok` as authoritative; report compiler diagnostics with file and line where available. Inspect raw logs only for `unknown_error` or when the JSON explicitly lacks usable diagnostics.
 
+If the runner reports `unity_editor_not_found` or another Unity editor resolution failure, follow the custom Unity Editor path flow in the utility reference: ask the user for a custom Unity Hub Editor root or explicit executable path, validate it, then retry with `--editor-base`/`--editor` or persist the Hub root in project config.
+
 If sandboxing blocks the first download, Unity Licensing, Package Manager, user caches, or Unity Hub IPC, rerun with the required permission.
 
 For configuration, uncommon flags, artifact handling, and edge cases, read the [complete utility reference](../../references/UTILITY_USAGE.md).

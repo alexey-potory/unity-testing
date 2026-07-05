@@ -29,4 +29,6 @@ On macOS or Linux, use the equivalent `sh <SKILL_DIR>/../../scripts/invoke-runne
 
 Switch to PlayMode when the test requires it. Plain `ok` is sufficient evidence of success; on JSON failure, diagnose from `status`, failed test details, and source before opening raw logs.
 
+If the runner reports `unity_editor_not_found` or another Unity editor resolution failure, follow the custom Unity Editor path flow in the utility reference: ask the user for a custom Unity Hub Editor root or explicit executable path, validate it, then retry with `--editor-base`/`--editor` or persist the Hub root in project config.
+
 Read the [Unity test patterns reference](../../references/test-patterns.json) when choosing assertions, structuring EditMode/PlayMode tests, or diagnosing common failures. For runner flags, configuration, artifacts, and edge cases, read the [complete utility reference](../../references/UTILITY_USAGE.md).

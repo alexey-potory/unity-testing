@@ -1,6 +1,6 @@
 {
   "name": "unity-testing",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Compile Unity projects, run Unity Test Framework tests, and write focused tests.",
   "author": {
     "name": "Alexey Potory",

@@ -30,7 +30,7 @@ editor_executable = ""
 # Windows Unity Hub layout under each version directory.
 windows_executable_relative_path = "Editor\\Unity.exe"
 macos_executable_relative_path = "Unity.app/Contents/MacOS/Unity"
-linux_executable_relative_path = "Unity"
+linux_executable_relative_path = "Editor/Unity"
 
 [tests]
 default_platform = "EditMode"

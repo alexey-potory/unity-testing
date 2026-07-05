@@ -16,6 +16,54 @@ The utility resolves the Unity Editor executable by itself from the Unity projec
 
 Do not manually search for `Unity.exe`, inspect Unity Hub directories, or call Unity directly before running tests. Use `--editor <path>` only when the user explicitly provides an editor path or when `doctor`/runner JSON reports that Unity editor resolution failed. Use `--editor-base <path>` only to add an extra Unity Hub editor search root.
 
+### When the Unity Editor is not found
+
+Trigger this flow only after `doctor`, `compile-check`, or `run` reports `unity_editor_not_found` or another explicit Unity editor resolution failure. Do not ask for a custom path before the utility has tried its configured search roots.
+
+In an interactive Codex session, stop and ask one concise question. Prefer a directory that contains Unity Hub version folders, not the Unity executable itself. Example prompt:
+
+```text
+I couldn't find the Unity Editor version required by this project. Is Unity installed in a custom Unity Hub Editor root?
+
+Reply with one of:
+1. A Hub Editor root directory, e.g. D:\Unity\Hub\Editor, /Applications/Unity/Hub/Editor, /opt/unity/editors
+2. A full Unity executable path, e.g. D:\Unity\Hub\Editor\2022.3.40f1\Editor\Unity.exe
+3. "No" to stop here
+```
+
+If the user provides a Hub Editor root, validate the expected executable for the project version before changing config:
+
+```text
+<custom-root>/<m_EditorVersion>/<platform-executable-relative-path>
+```
+
+Platform executable relative paths are:
+
+```text
+Windows: Editor\Unity.exe
+macOS:   Unity.app/Contents/MacOS/Unity
+Linux:   Editor/Unity
+```
+
+For a one-off retry, pass `--editor-base <custom-root>` and rerun the original command. For a persistent project fix, update the project config instead. Prefer `.codex/unity-test-runner.toml` unless the repository already uses `unity-test-runner.toml`.
+
+Important: a project config value for `[unity].search_roots` replaces the previous list rather than appending to it. When adding a custom root, preserve any existing project roots and the plugin defaults, then add the custom root once. Do not write only the custom root unless the user explicitly wants to restrict searches to that root.
+
+Example persistent project config snippet:
+
+```toml
+[unity]
+search_roots = [
+  "D:\\Unity\\Hub\\Editor",
+  "C:\\Program Files\\Unity\\Hub\\Editor",
+  "%LOCALAPPDATA%\\Unity\\Hub\\Editor",
+  "/Applications/Unity/Hub/Editor",
+  "$HOME/Unity/Hub/Editor"
+]
+```
+
+If the user provides a full Unity executable path instead of a Hub Editor root, prefer a one-off `--editor <path>` retry. Only persist `editor_executable` when the user asks for that exact executable to always be used for the project.
+
 If download fails, report the release URL and diagnostic. Do not bypass checksum verification.
 
 ## Command behavior
