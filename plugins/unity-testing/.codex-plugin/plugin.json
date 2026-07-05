@@ -1,6 +1,6 @@
 {
   "name": "unity-testing",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Compile Unity projects, run Unity Test Framework tests, and write focused tests.",
   "author": {
     "name": "Alexey Potory",
@@ -22,6 +22,10 @@
     "composerIcon": "./assets/unity-testing.svg",
     "logo": "./assets/unity-testing.svg",
     "websiteURL": "https://github.com/alexey-potory/unity-testing",
-    "defaultPrompt": "Run the relevant Unity tests and diagnose any failures."
+    "defaultPrompt": [
+      "Check whether this Unity project compiles.",
+      "Run the relevant Unity tests and diagnose failures.",
+      "Add focused Unity tests for this behavior."
+    ]
   }
 }
