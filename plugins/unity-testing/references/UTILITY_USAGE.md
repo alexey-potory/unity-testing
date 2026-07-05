@@ -12,9 +12,11 @@ Call the platform launcher; it downloads the pinned release on first use, verifi
 
 On macOS or Linux use `sh <PLUGIN_ROOT>/scripts/invoke-runner.sh`.
 
-The utility resolves the Unity Editor executable by itself from the Unity project and configuration. It reads the project version, searches configured/default Unity Hub editor roots, builds the Unity command line, chooses artifact paths, and launches the correct Unity executable.
+The utility resolves the Unity Editor executable by itself from the Unity project and configuration. It reads the project version, searches configured/default Unity Hub editor roots from TOML config, builds the Unity command line, chooses artifact paths, and launches the correct Unity executable.
 
-Do not manually search for `Unity.exe`, inspect Unity Hub directories, or call Unity directly before running tests. Use `--editor <path>` only when the user explicitly provides an editor path or when `doctor`/runner JSON reports that Unity editor resolution failed. Use `--editor-base <path>` only to add an extra Unity Hub editor search root.
+Do not manually search for `Unity.exe`, inspect Unity Hub directories, or call Unity directly before running tests. Do not use a user-provided Hub Editor root as a one-off CLI substitution by default. If the user provides an alternate Unity Hub `Editor` root, persist it in the plugin default TOML config so the cached runner binary receives it through normal config resolution.
+
+Use `--editor <path>` only when the user explicitly asks to run one exact Unity executable or when a short diagnostic retry with an executable path is unavoidable. Use `--editor-base <path>` only for deliberate temporary diagnostics; it is not the default remediation for a missing editor.
 
 ### When the Unity Editor is not found
 
@@ -45,11 +47,27 @@ macOS:   Unity.app/Contents/MacOS/Unity
 Linux:   Editor/Unity
 ```
 
-For a one-off retry, pass `--editor-base <custom-root>` and rerun the original command. For a persistent project fix, update the project config instead. Prefer `.codex/unity-test-runner.toml` unless the repository already uses `unity-test-runner.toml`.
+After validation, globally add the Hub Editor root to `[unity].search_roots` in the runner default config. Do not pass `--editor-base` for the normal retry, and do not edit project config for this case. The goal is to make the root available to the runner binary through its default TOML config.
 
-Important: a project config value for `[unity].search_roots` replaces the previous list rather than appending to it. When adding a custom root, preserve any existing project roots and the plugin defaults, then add the custom root once. Do not write only the custom root unless the user explicitly wants to restrict searches to that root.
+Default-config update flow:
 
-Example persistent project config snippet:
+1. Inspect `invoke-runner.ps1` or `invoke-runner.sh` to identify the plugin root and runner version/cache layout.
+2. Edit the plugin default config at `<PLUGIN_ROOT>/config/default.toml`.
+3. Add the custom Hub `Editor` root to `[unity].search_roots`, preserving every existing root and adding the custom root only once.
+4. If the runner is already cached, also update the copied default config next to the runner binary:
+   - Windows: `%LOCALAPPDATA%\unity-testing\runner\v<runner-version>\config\default.toml`
+   - Linux/macOS: `${XDG_CACHE_HOME:-$HOME/.cache}/unity-testing/runner/v<runner-version>/config/default.toml`
+5. Rerun validation through the launcher without `--editor-base`:
+
+```powershell
+& <PLUGIN_ROOT>\scripts\invoke-runner.ps1 doctor --project . --format minimal
+```
+
+```sh
+sh <PLUGIN_ROOT>/scripts/invoke-runner.sh doctor --project . --format minimal
+```
+
+Example default config snippet after adding a custom Windows root:
 
 ```toml
 [unity]
@@ -62,7 +80,9 @@ search_roots = [
 ]
 ```
 
-If the user provides a full Unity executable path instead of a Hub Editor root, prefer a one-off `--editor <path>` retry. Only persist `editor_executable` when the user asks for that exact executable to always be used for the project.
+Important: a TOML value for `[unity].search_roots` replaces the previous list rather than appending to it. When adding a custom root, preserve the existing default roots and add the custom root once. Do not write only the custom root unless the user explicitly wants to restrict editor searches to that root.
+
+If the user provides a full Unity executable path instead of a Hub Editor root, first try to derive the Hub Editor root by removing the version directory and platform executable suffix. If the path matches the expected Hub layout, validate the derived root and persist that root in `[unity].search_roots`. If the path does not match the Hub layout, ask for the Hub Editor root. Use `--editor <path>` or persist `editor_executable` only when the user explicitly wants that exact executable to always be used.
 
 If download fails, report the release URL and diagnostic. Do not bypass checksum verification.
 
@@ -84,8 +104,8 @@ These flags are available where the command supports them:
 
 ```text
 --project <path>                       Unity project root. Default: current directory.
---editor <path>                        Explicit Unity.exe path; usually unnecessary because the utility resolves it.
---editor-base <path>                   Additional Unity Hub editor search root. Repeatable.
+--editor <path>                        Explicit Unity executable path. Avoid for normal runs; use only for exact-executable overrides or temporary diagnostics.
+--editor-base <path>                   Additional Unity Hub editor search root for temporary diagnostics. Repeatable. Do not use as the default fix for a user-provided Hub root; persist that root in default.toml instead.
 --config <path>                        Explicit TOML config path.
 --format minimal|minimal-json|compact-json|pretty-json
                                        Output format. Prefer minimal unless full success JSON is needed.
@@ -218,7 +238,7 @@ Expected project config paths:
 unity-test-runner.toml
 ```
 
-The default config can contain Unity search roots, artifact paths, timeout, logging limits, diagnostic limits, and output preferences. Prefer `format = "minimal"` unless the project explicitly needs full success JSON.
+The default config can contain Unity search roots, artifact paths, timeout, logging limits, diagnostic limits, and output preferences. When a user provides an alternate Unity Hub `Editor` root, update `[unity].search_roots` in the plugin default config and the cached copied default config if it already exists. Prefer `format = "minimal"` unless the project explicitly needs full success JSON.
 
 ## Reporting
 

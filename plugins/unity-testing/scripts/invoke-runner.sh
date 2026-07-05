@@ -32,7 +32,13 @@ runner="$bin_dir/unity-test-runner"
 config_dir="$version_root/config"
 
 mkdir -p "$bin_dir" "$config_dir"
-cp "$plugin_root/config/default.toml" "$config_dir/default.toml"
+
+source_config="$plugin_root/config/default.toml"
+target_config="$config_dir/default.toml"
+
+if [ ! -f "$target_config" ] || ! cmp -s "$source_config" "$target_config"; then
+    cp "$source_config" "$target_config"
+fi
 
 if [ ! -f "$runner" ]; then
     download="$runner.$$.download"

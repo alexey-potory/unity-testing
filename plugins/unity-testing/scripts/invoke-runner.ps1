@@ -28,7 +28,17 @@ $runner = Join-Path $binDir "unity-test-runner.exe"
 $configDir = Join-Path $versionRoot "config"
 
 New-Item $binDir, $configDir -ItemType Directory -Force | Out-Null
-Copy-Item (Join-Path $pluginRoot "config/default.toml") (Join-Path $configDir "default.toml") -Force
+
+$sourceConfig = Join-Path $pluginRoot "config/default.toml"
+$targetConfig = Join-Path $configDir "default.toml"
+
+if (
+    -not (Test-Path -LiteralPath $targetConfig) -or
+    ((Get-FileHash -LiteralPath $sourceConfig -Algorithm SHA256).Hash -ne
+     (Get-FileHash -LiteralPath $targetConfig -Algorithm SHA256).Hash)
+) {
+    Copy-Item $sourceConfig $targetConfig -Force
+}
 
 if (-not (Test-Path -LiteralPath $runner)) {
     $download = "$runner.$PID.download"
