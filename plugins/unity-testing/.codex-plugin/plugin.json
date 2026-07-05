@@ -1,7 +1,7 @@
 {
   "name": "unity-testing",
-  "version": "0.1.3",
-  "description": "Compile Unity projects, run Unity Test Framework tests, and write focused tests.",
+  "version": "0.1.4",
+  "description": "Prefer unity_tests MCP when available, compile Unity projects, run Unity Test Framework tests, and write focused tests.",
   "author": {
     "name": "Alexey Potory",
     "email": "alexey.potory@gmail.com",
@@ -10,19 +10,32 @@
   "homepage": "https://github.com/alexey-potory/unity-testing",
   "repository": "https://github.com/alexey-potory/unity-testing",
   "license": "MIT",
-  "keywords": ["unity", "testing", "editmode", "playmode", "codex"],
+  "keywords": [
+    "unity",
+    "testing",
+    "editmode",
+    "playmode",
+    "codex",
+    "mcp",
+    "unity_tests",
+    "compilation"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Unity Testing",
-    "shortDescription": "Compile, run, and write focused Unity tests.",
-    "longDescription": "Checks Unity compilation, runs targeted EditMode or PlayMode tests through unity-test-runner, and guides focused Unity test authoring.",
+    "shortDescription": "MCP-first Unity diagnostics, compilation, tests, and test authoring.",
+    "longDescription": "Prefers the unity_tests MCP server for Unity diagnostics, compile checks, and targeted EditMode or PlayMode test runs, with a pinned unity-test-runner fallback. Also guides focused Unity test authoring.",
     "developerName": "Alexey Potory",
     "category": "Productivity",
-    "capabilities": ["Execute", "Write"],
+    "capabilities": [
+      "Execute",
+      "Write"
+    ],
     "composerIcon": "./assets/unity-testing.svg",
     "logo": "./assets/unity-testing.svg",
     "websiteURL": "https://github.com/alexey-potory/unity-testing",
     "defaultPrompt": [
+      "Use unity_tests MCP diagnostics for this Unity project when available.",
       "Check whether this Unity project compiles.",
       "Run the relevant Unity tests and diagnose failures.",
       "Add focused Unity tests for this behavior."

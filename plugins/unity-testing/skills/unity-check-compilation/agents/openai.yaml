@@ -3,4 +3,4 @@ interface:
   short_description: "Check whether a Unity project compiles"
   icon_small: "./assets/badge-check.svg"
   icon_large: "./assets/badge-check.svg"
-  default_prompt: "Use $unity-check-compilation to check whether this Unity project compiles."
+  default_prompt: "Use $unity-check-compilation to check compilation, preferring unity_tests MCP when available."

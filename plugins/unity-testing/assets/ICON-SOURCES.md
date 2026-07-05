@@ -2,7 +2,7 @@
 
 Base shapes: Tabler Icons 3.44.0, MIT License.
 
-This package contains two color treatments for the same four SVG icons:
+This package contains two color treatments for the same five SVG icons:
 
 - `blue/`: single-color blue icons using `#2563EB`.
 - `blue-accent/`: mostly blue icons with subtle accents:
@@ -12,10 +12,11 @@ This package contains two color treatments for the same four SVG icons:
   - code purple `#7C3AED`
   - pencil amber `#F59E0B`
 
-Mappings are unchanged from the plugin paths:
+Mappings from the plugin paths:
 
 - `assets/unity-testing.svg` ← Tabler `brand-unity`
 - `skills/unity-check-compilation/assets/badge-check.svg` ← Tabler `file-check`
+- `skills/unity-mcp/assets/server-check.svg` ← Tabler `server` + `check`
 - `skills/unity-run-tests/assets/test-tube-diagonal.svg` ← Tabler `test-pipe`
 - `skills/unity-write-tests/assets/file-pen-line.svg` ← Tabler `pencil-code`
 

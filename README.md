@@ -1,6 +1,6 @@
 # Unity Testing Codex Marketplace
 
-Codex plugin for checking Unity compilation, running targeted EditMode or PlayMode tests, and writing focused Unity tests.
+Codex plugin for MCP-first Unity diagnostics, compilation checks, targeted EditMode or PlayMode test runs, and focused Unity test authoring.
 
 ## Install
 
@@ -9,11 +9,28 @@ codex plugin marketplace add alexey-potory/unity-testing --ref main
 codex plugin add unity-testing@alexey-potory
 ```
 
-Start a new Codex thread after installation. The first compile or test run downloads the pinned `unity-test-runner` release, verifies its SHA-256 checksum, and caches it outside the plugin directory.
+Start a new Codex thread after installation. When the `unity_tests` MCP server is available, the Unity skills use it first for diagnostics, compilation checks, and test runs. If MCP is unavailable, the first fallback compile or test run downloads the pinned `unity-test-runner` release, verifies its SHA-256 checksum, and caches it outside the plugin directory.
+
+## Skills
+
+The plugin registers skills from `plugins/unity-testing/.codex-plugin/plugin.json` through the directory pointer:
+
+```json
+"skills": "./skills/"
+```
+
+Skill directories currently shipped by the package:
+
+- `unity-mcp`: MCP-first Unity validation using `unity_doctor`, `unity_compile_check`, and `unity_run_tests`.
+- `unity-check-compilation`: compile-only validation; prefers `unity_compile_check`, then falls back to the shared runner.
+- `unity-run-tests`: targeted Unity Test Framework runs; prefers `unity_run_tests`, then falls back to the shared runner.
+- `unity-write-tests`: focused NUnit/Unity Test Framework test authoring with MCP-first validation.
+
+The MCP tools are independent. Choose `unity_doctor` for diagnostics or the Unity Editor version, `unity_compile_check` for compilation only, and `unity_run_tests` for test results. Use `format = "minimal-json"` by default unless detailed diagnostics are needed.
 
 ## Configure Unity editor roots
 
-The runner searches Unity Hub editor roots from `config/default.toml`. If Unity is installed outside the defaults, add the Hub `Editor` root, not a project-specific override.
+The fallback runner searches Unity Hub editor roots from `config/default.toml`. If Unity is installed outside the defaults, add the Hub `Editor` root, not a project-specific override.
 
 ### Via Codex agent
 
@@ -57,7 +74,9 @@ sh plugins/unity-testing/scripts/invoke-runner.sh doctor --project . --format mi
 
 - `.agents/plugins/marketplace.json`: Git-backed Codex marketplace catalog
 - `plugins/unity-testing`: plugin package
-- `tests/launcher-contract.ps1`: package and launcher contract check
+- `plugins/unity-testing/.codex-plugin/plugin.json`: plugin metadata and `./skills/` registration pointer
+- `plugins/unity-testing/skills`: individual skill packages, including `unity-mcp`
+- `tests/launcher-contract.ps1`: package, launcher, and skill registration contract check
 
 ## Validate
 

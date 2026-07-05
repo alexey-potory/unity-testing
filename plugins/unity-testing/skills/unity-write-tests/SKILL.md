@@ -18,7 +18,15 @@ Prefer `[Test]` for synchronous behavior. Use `[UnityTest]` returning `IEnumerat
 
 Reuse an existing test asmdef when its references and platform constraints fit. Create or change an asmdef only when the test cannot compile in an existing test assembly.
 
-After writing the test, run the narrowest matching selection through the shared utility:
+After writing the test, validate through the `unity_tests` MCP server when it is available. Before using the PowerShell/shared runner fallback, check whether the `unity_tests` MCP server is available in the active tool list/session.
+
+Use `unity_run_tests` for the narrowest matching test selection. It compiles the project and runs Unity tests, so do not run `unity_doctor` or `unity_compile_check` first by default. The MCP tools are independent and there is no required sequence.
+
+Use `format = "minimal-json"` by default unless detailed diagnostics are needed.
+
+Prefer targeted EditMode validation. Switch to PlayMode only when the test requires runtime behavior such as MonoBehaviour lifecycle, frames, physics, scenes, or coroutines. Avoid broad PlayMode tests unless the change requires them.
+
+If the `unity_tests` MCP server is not available, or the tool call clearly fails because the server is missing/unreachable, fall back to the shared utility:
 
 ```powershell
 $runner = "<SKILL_DIR>\..\..\scripts\invoke-runner.ps1"
@@ -27,8 +35,8 @@ $runner = "<SKILL_DIR>\..\..\scripts\invoke-runner.ps1"
 
 On macOS or Linux, use the equivalent `sh <SKILL_DIR>/../../scripts/invoke-runner.sh ...` command. The first call downloads the pinned runner release and verifies its SHA-256 checksum.
 
-Switch to PlayMode when the test requires it. Plain `ok` is sufficient evidence of success; on JSON failure, diagnose from `status`, failed test details, and source before opening raw logs.
+For validation output, plain `ok` is sufficient evidence of success. On JSON failure, diagnose from `status`, failed test details, and source before opening raw logs.
 
-If the runner reports `unity_editor_not_found` or another Unity editor resolution failure, follow the custom Unity Editor path flow in the utility reference: ask the user for a custom Unity Hub Editor root or explicit executable path, validate it, then retry with `--editor-base`/`--editor` or persist the Hub root in project config.
+If MCP or the fallback runner reports `unity_editor_not_found` or another Unity editor resolution failure, use diagnostics (`unity_doctor` when MCP is available; otherwise fallback `doctor`) and follow the custom Unity Editor path flow in the utility reference: ask the user for a custom Unity Hub Editor root or explicit executable path, validate it, then retry with `--editor-base`/`--editor` or persist the Hub root in project config.
 
-Read the [Unity test patterns reference](../../references/test-patterns.json) when choosing assertions, structuring EditMode/PlayMode tests, or diagnosing common failures. For runner flags, configuration, artifacts, and edge cases, read the [complete utility reference](../../references/UTILITY_USAGE.md).
+Read the [Unity test patterns reference](../../references/test-patterns.json) when choosing assertions, structuring EditMode/PlayMode tests, or diagnosing common failures. For fallback runner flags, configuration, artifacts, and edge cases, read the [complete utility reference](../../references/UTILITY_USAGE.md).

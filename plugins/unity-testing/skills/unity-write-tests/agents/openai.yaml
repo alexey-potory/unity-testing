@@ -3,4 +3,4 @@ interface:
   short_description: "Create focused Unity EditMode or PlayMode tests"
   icon_small: "./assets/file-pen-line.svg"
   icon_large: "./assets/file-pen-line.svg"
-  default_prompt: "Use $unity-write-tests to add focused tests for this Unity behavior."
+  default_prompt: "Use $unity-write-tests to add focused tests and validate them through unity_tests MCP when available."

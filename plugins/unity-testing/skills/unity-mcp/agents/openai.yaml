@@ -1,0 +1,6 @@
+interface:
+  display_name: "Unity MCP Validation"
+  short_description: "Prefer unity_tests MCP for Unity diagnostics, compilation, and tests"
+  icon_small: "./assets/server-check.svg"
+  icon_large: "./assets/server-check.svg"
+  default_prompt: "Use $unity-mcp to validate this Unity project through unity_tests MCP when available."
