@@ -1,6 +1,6 @@
 {
   "name": "unity-testing",
-  "version": "0.1.4",
+  "version": "0.1.4.1",
   "description": "Prefer unity_tests MCP when available, compile Unity projects, run Unity Test Framework tests, and write focused tests.",
   "author": {
     "name": "Alexey Potory",
